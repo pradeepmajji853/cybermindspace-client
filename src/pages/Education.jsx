@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ACADEMY_BATCH1 } from '../data/academyData1';
@@ -158,18 +158,28 @@ function AcademyFull() {
   const [expandedTool, setExpandedTool] = useState(ALL_TOOLS[0].id);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [search, setSearch] = useState('');
+  const contentRef = useRef(null);
   const filtered = ALL_TOOLS.filter(t => t.name.toLowerCase().includes(search.toLowerCase()));
+
+  const scrollTop = () => contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
 
   const selectTool = (tool) => {
     setActiveTool(tool);
     setActiveSection(-1);
     setExpandedTool(tool.id);
+    setTimeout(scrollTop, 50);
   };
 
   const selectSection = (tool, sectionIdx) => {
     setActiveTool(tool);
     setActiveSection(sectionIdx);
     setExpandedTool(tool.id);
+    setTimeout(scrollTop, 50);
+  };
+
+  const goToSection = (idx) => {
+    setActiveSection(idx);
+    setTimeout(scrollTop, 50);
   };
 
   const totalSections = activeTool.sections?.length || 0;
@@ -278,7 +288,7 @@ function AcademyFull() {
       )}
 
       {/* Content Area */}
-      <div className="flex-1 overflow-y-auto space-y-5 pr-1 min-w-0" style={{scrollbarWidth:'thin'}}>
+      <div ref={contentRef} className="flex-1 overflow-y-auto space-y-5 pr-1 min-w-0" style={{scrollbarWidth:'thin'}}>
 
         {/* Open Tool CTA */}
         <Link to={activeTool.path} className="block glass-card group hover:border-brand-500/20 transition-all overflow-hidden">
@@ -305,12 +315,12 @@ function AcademyFull() {
 
         {/* Section navigation pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1" style={{scrollbarWidth:'thin'}}>
-          <button onClick={() => setActiveSection(-1)}
+          <button onClick={() => goToSection(-1)}
             className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all ${
               activeSection===-1 ? 'bg-brand-500 text-white shadow-glow-sm' : 'glass-card hover:bg-surface-100 dark:hover:bg-surface-800'
             }`} style={activeSection===-1?{}:{color:'var(--color-text-secondary)'}}>Overview</button>
           {activeTool.sections?.map((s,i) => (
-            <button key={i} onClick={() => setActiveSection(i)}
+            <button key={i} onClick={() => goToSection(i)}
               className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all ${
                 activeSection===i ? 'bg-brand-500 text-white shadow-glow-sm' : 'glass-card hover:bg-surface-100 dark:hover:bg-surface-800'
               }`} style={activeSection===i?{}:{color:'var(--color-text-secondary)'}}>
@@ -318,7 +328,7 @@ function AcademyFull() {
             </button>
           ))}
           {activeTool.tip && (
-            <button onClick={() => setActiveSection(totalSections)}
+            <button onClick={() => goToSection(totalSections)}
               className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all flex items-center gap-1 ${
                 activeSection===totalSections ? 'bg-brand-500 text-white shadow-glow-sm' : 'glass-card hover:bg-surface-100 dark:hover:bg-surface-800'
               }`} style={activeSection===totalSections?{}:{color:'var(--color-text-secondary)'}}>
@@ -342,7 +352,7 @@ function AcademyFull() {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {activeTool.sections?.map((s,i) => (
-                  <button key={i} onClick={() => setActiveSection(i)}
+                  <button key={i} onClick={() => goToSection(i)}
                     className="text-left p-4 rounded-xl border border-transparent hover:border-brand-500/15 transition-all group"
                     style={{background:'var(--color-surface-hover)'}}>
                     <div className="flex items-start gap-3">
@@ -363,7 +373,7 @@ function AcademyFull() {
             {/* Bottom nav: go to Section 1 */}
             {totalSections > 0 && (
               <div className="flex items-center justify-end mt-6 pt-5" style={{borderTop:'1px solid var(--color-border)'}}>
-                <button onClick={() => setActiveSection(0)} className="btn-primary py-2.5 px-6 text-xs">
+                <button onClick={() => goToSection(0)} className="btn-primary py-2.5 px-6 text-xs">
                   Start Reading — Section 1 <HiOutlineArrowRight className="w-3 h-3" />
                 </button>
               </div>
@@ -382,15 +392,15 @@ function AcademyFull() {
 
             {/* Prev / Next navigation */}
             <div className="flex items-center justify-between mt-8 pt-5" style={{borderTop:'1px solid var(--color-border)'}}>
-              <button onClick={() => setActiveSection(activeSection > 0 ? activeSection-1 : -1)} className="flex items-center gap-2 text-xs font-semibold text-brand-500 hover:underline">
+              <button onClick={() => goToSection(activeSection > 0 ? activeSection-1 : -1)} className="flex items-center gap-2 text-xs font-semibold text-brand-500 hover:underline">
                 <HiOutlineArrowRight className="w-3 h-3 rotate-180" /> {activeSection > 0 ? `Section ${activeSection}` : 'Overview'}
               </button>
               {activeSection < totalSections - 1 ? (
-                <button onClick={() => setActiveSection(activeSection+1)} className="btn-primary py-2.5 px-5 text-xs">
+                <button onClick={() => goToSection(activeSection+1)} className="btn-primary py-2.5 px-5 text-xs">
                   Section {activeSection+2} <HiOutlineArrowRight className="w-3 h-3" />
                 </button>
               ) : activeTool.tip ? (
-                <button onClick={() => setActiveSection(totalSections)} className="btn-primary py-2.5 px-5 text-xs">
+                <button onClick={() => goToSection(totalSections)} className="btn-primary py-2.5 px-5 text-xs">
                   <HiOutlineStar className="w-3 h-3" /> Pro Tip
                 </button>
               ) : null}
@@ -409,10 +419,10 @@ function AcademyFull() {
 
             {/* Bottom nav: back to last section */}
             <div className="flex items-center justify-between mt-6 pt-5" style={{borderTop:'1px solid var(--color-border)'}}>
-              <button onClick={() => setActiveSection(totalSections - 1)} className="flex items-center gap-2 text-xs font-semibold text-brand-500 hover:underline">
+              <button onClick={() => goToSection(totalSections - 1)} className="flex items-center gap-2 text-xs font-semibold text-brand-500 hover:underline">
                 <HiOutlineArrowRight className="w-3 h-3 rotate-180" /> Back to Section {totalSections}
               </button>
-              <button onClick={() => setActiveSection(-1)} className="btn-ghost text-xs">
+              <button onClick={() => goToSection(-1)} className="btn-ghost text-xs">
                 <HiOutlineBookOpen className="w-3 h-3" /> Overview
               </button>
             </div>
