@@ -30,7 +30,7 @@ function ReportsShowcase() {
     <div className="max-w-4xl mx-auto space-y-10 animate-fade-in py-4">
       {/* Hero */}
       <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-[10px] font-bold uppercase tracking-widest mx-auto">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-500 text-[10px] font-bold uppercase tracking-widest mx-auto">
           <HiOutlineDocumentReport className="w-4 h-4" /> Pro Reports
         </div>
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ color: 'var(--color-text)' }}>
@@ -56,15 +56,15 @@ function ReportsShowcase() {
             icon: HiOutlineDownload,
             title: 'PDF Export',
             desc: 'Export investigations as professional, branded PDF reports. Share findings with clients, teams, or include in bug bounty submissions.',
-            color: 'text-emerald-500',
-            bg: 'bg-emerald-500/10',
+            color: 'text-sky-400',
+            bg: 'bg-sky-500/10',
           },
           {
             icon: HiOutlineChartBar,
             title: 'Risk Analytics',
             desc: 'Each report includes automated risk scoring, threat indicators, and severity ratings to help prioritize your findings.',
-            color: 'text-amber-500',
-            bg: 'bg-amber-500/10',
+            color: 'text-blue-300',
+            bg: 'bg-blue-500/10',
           },
         ].map(({ icon: Icon, title, desc, color, bg }, i) => (
           <div
@@ -87,13 +87,13 @@ function ReportsShowcase() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { label: 'Email Intelligence', icon: '📧', color: 'bg-blue-500/10 border-blue-500/10' },
-            { label: 'Domain Analysis', icon: '🌐', color: 'bg-purple-500/10 border-purple-500/10' },
-            { label: 'IP Geolocation', icon: '📍', color: 'bg-emerald-500/10 border-emerald-500/10' },
-            { label: 'Port Scanning', icon: '🔍', color: 'bg-amber-500/10 border-amber-500/10' },
-            { label: 'Vulnerability Scan', icon: '🛡️', color: 'bg-red-500/10 border-red-500/10' },
-            { label: 'Tech Stack Detection', icon: '⚙️', color: 'bg-cyan-500/10 border-cyan-500/10' },
-            { label: 'WHOIS Privacy', icon: '🔒', color: 'bg-orange-500/10 border-orange-500/10' },
-            { label: 'Subdomain Takeover', icon: '🎯', color: 'bg-pink-500/10 border-pink-500/10' },
+            { label: 'Domain Analysis', icon: '🌐', color: 'bg-indigo-500/10 border-indigo-500/10' },
+            { label: 'IP Geolocation', icon: '📍', color: 'bg-sky-500/10 border-sky-500/10' },
+            { label: 'Port Scanning', icon: '🔍', color: 'bg-blue-400/10 border-blue-400/10' },
+            { label: 'Vulnerability Scan', icon: '🛡️', color: 'bg-slate-500/10 border-slate-500/10' },
+            { label: 'Tech Stack Detection', icon: '⚙️', color: 'bg-sky-400/10 border-sky-400/10' },
+            { label: 'WHOIS Privacy', icon: '🔒', color: 'bg-indigo-400/10 border-indigo-400/10' },
+            { label: 'Subdomain Takeover', icon: '🎯', color: 'bg-blue-300/10 border-blue-300/10' },
           ].map(({ label, icon, color }) => (
             <div key={label} className={`p-4 rounded-xl border ${color} text-center transition-all hover:scale-[1.02]`}>
               <span className="text-2xl block mb-2">{icon}</span>
@@ -114,7 +114,7 @@ function ReportsShowcase() {
               </div>
               <div>
                 <p className="text-sm font-mono font-bold">example.com</p>
-                <span className="text-[10px] text-emerald-500 font-bold">domain • Risk: 42</span>
+                <span className="text-[10px] text-sky-400 font-bold">domain • Risk: 42</span>
               </div>
             </div>
             <button className="btn-primary text-xs py-2 px-4"><HiOutlineDownload className="w-4 h-4" /> Export PDF</button>
@@ -224,8 +224,8 @@ function ReportsFull() {
   return (
     <div className="max-w-5xl mx-auto space-y-6 animate-fade-in">
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-          <HiOutlineDocumentReport className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+        <div className="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center">
+          <HiOutlineDocumentReport className="w-6 h-6 text-sky-600 dark:text-sky-400" />
         </div>
         <div>
           <h1 className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>Saved Reports</h1>
@@ -272,7 +272,7 @@ function ReportsFull() {
                   <button onClick={() => handleDownload(report.id)} className="btn-ghost text-xs py-1 px-2" title="Download PDF">
                     <HiOutlineDownload className="w-4 h-4" />
                   </button>
-                  <button onClick={() => handleUnsave(report.id)} className="btn-ghost text-xs py-1 px-2 text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10" title="Remove from saved">
+                  <button onClick={() => handleUnsave(report.id)} className="btn-ghost text-xs py-1 px-2 text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/10" title="Remove from saved">
                     <HiOutlineBookmark className="w-4 h-4 fill-current" />
                   </button>
                 </div>

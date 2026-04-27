@@ -10,7 +10,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 export default function OsintTool() {
-  const { userProfile } = useAuth();
+  const { userProfile, refreshProfile } = useAuth();
   const [searchParams] = useSearchParams();
   const toolType = searchParams.get('type') || 'osint';
   
@@ -35,6 +35,7 @@ export default function OsintTool() {
     try {
       const { data } = await client.post('/osint/investigate', { query, inputType: toolType });
       setReport(data);
+      refreshProfile(); // Update daily usage counter
       toast.success('Investigation complete');
     } catch (err) {
       const msg = err.response?.data?.error || 'Investigation failed';

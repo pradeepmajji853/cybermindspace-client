@@ -154,7 +154,7 @@ export default function Billing() {
                   {plan.features.map(feature => (
                     <li key={feature.text} className="flex items-start gap-3 text-[13px]">
                       {feature.included ? (
-                        <HiOutlineCheck className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                        <HiOutlineCheck className="w-4 h-4 text-brand-500 flex-shrink-0 mt-0.5" />
                       ) : (
                         <HiOutlineX className="w-4 h-4 flex-shrink-0 mt-0.5 opacity-20" />
                       )}

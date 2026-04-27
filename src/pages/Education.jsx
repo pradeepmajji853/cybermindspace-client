@@ -61,7 +61,7 @@ function AcademyShowcase() {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-[13px] font-bold truncate" style={{ color: 'var(--color-text)' }}>{tool.name}</h3>
-                <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${tool.tier === 'Free' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-brand-500/10 text-brand-500'}`}>{tool.tier}</span>
+                <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${tool.tier === 'Free' ? 'bg-sky-500/10 text-sky-400' : 'bg-brand-500/10 text-brand-500'}`}>{tool.tier}</span>
               </div>
             </div>
             <p className="text-[11px] leading-relaxed line-clamp-2 mb-3" style={{ color: 'var(--color-text-secondary)' }}>
@@ -83,8 +83,8 @@ function AcademyShowcase() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[
               { icon: HiOutlineShieldCheck, title: 'Tool Overview', desc: 'Understand what the tool does, how it works, and when to use it in real investigations.', color: 'text-brand-500' },
-              { icon: HiOutlineCode, title: 'Technical Deep-Dive', desc: 'Methodology breakdowns, output analysis, and real-world examples with explained results.', color: 'text-emerald-500' },
-              { icon: HiOutlineStar, title: 'Expert Pro Tips', desc: 'Bug bounty strategies, common pitfalls, and advanced techniques used by professionals.', color: 'text-amber-500' },
+              { icon: HiOutlineCode, title: 'Technical Deep-Dive', desc: 'Methodology breakdowns, output analysis, and real-world examples with explained results.', color: 'text-sky-400' },
+              { icon: HiOutlineStar, title: 'Expert Pro Tips', desc: 'Bug bounty strategies, common pitfalls, and advanced techniques used by professionals.', color: 'text-blue-300' },
             ].map(({ icon: Icon, title, desc, color }, i) => (
               <div key={title} className="p-5 rounded-xl border border-white/[0.06] hover:border-brand-500/10 transition-all" style={{ background: 'var(--color-surface)' }}>
                 <Icon className={`w-7 h-7 ${color} mb-3`} />
@@ -202,7 +202,7 @@ function AcademyFull() {
                 <div className="min-w-0 flex-1">
                   <p className="text-[11px] font-bold truncate leading-tight">{tool.name}</p>
                   <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider inline-block mt-0.5 ${
-                    isActive ? 'bg-white/20 text-white' : tool.tier === 'Free' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-brand-500/10 text-brand-500'
+                    isActive ? 'bg-white/20 text-white' : tool.tier === 'Free' ? 'bg-sky-500/10 text-sky-400' : 'bg-brand-500/10 text-brand-500'
                   }`}>{tool.tier}</span>
                 </div>
                 <HiOutlineChevronRight className={`w-3 h-3 flex-shrink-0 transition-transform ${isActive ? 'translate-x-0.5' : 'opacity-30'}`} />
@@ -225,7 +225,7 @@ function AcademyFull() {
               <div>
                 <h1 className="text-lg font-bold" style={{ color: 'var(--color-text)' }}>{activeTool.name}</h1>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${activeTool.tier === 'Free' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-brand-500/10 text-brand-500'}`}>{activeTool.tier}</span>
+                  <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${activeTool.tier === 'Free' ? 'bg-sky-500/10 text-sky-400' : 'bg-brand-500/10 text-brand-500'}`}>{activeTool.tier}</span>
                   <Link to={activeTool.path} className="text-[10px] text-brand-500 font-semibold flex items-center gap-1 hover:underline">
                     Open Tool <HiOutlineExternalLink className="w-3 h-3" />
                   </Link>
@@ -249,10 +249,10 @@ function AcademyFull() {
 
         {/* Pro Tip */}
         {activeTool.tip && (
-          <div className="glass-card p-6" style={{borderLeft:'3px solid #F59E42'}}>
+          <div className="glass-card p-6" style={{borderLeft:'3px solid #5B8DEF'}}>
             <div className="flex items-center gap-2 mb-3">
-              <HiOutlineStar className="w-4 h-4 text-amber-500" />
-              <h2 className="text-sm font-bold text-amber-500">Expert Pro Tip</h2>
+              <HiOutlineStar className="w-4 h-4 text-blue-400" />
+              <h2 className="text-sm font-bold text-blue-400">Expert Pro Tip</h2>
             </div>
             <p className="text-[13px] leading-[1.9]" style={{ color: 'var(--color-text-secondary)' }}>{activeTool.tip}</p>
           </div>

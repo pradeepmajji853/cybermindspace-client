@@ -52,8 +52,8 @@ export default function Login() {
       <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden" style={{ background: '#080C18' }}>
         {/* Ambient glow effects */}
         <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full opacity-20" style={{background:'radial-gradient(circle, #4F6EF7 0%, transparent 70%)'}} />
-        <div className="absolute bottom-[-15%] right-[-5%] w-[400px] h-[400px] rounded-full opacity-15" style={{background:'radial-gradient(circle, #A855F7 0%, transparent 70%)'}} />
-        <div className="absolute top-[40%] right-[20%] w-[200px] h-[200px] rounded-full opacity-10" style={{background:'radial-gradient(circle, #4F6EF7 0%, transparent 70%)'}} />
+        <div className="absolute bottom-[-15%] right-[-5%] w-[400px] h-[400px] rounded-full opacity-15" style={{background:'radial-gradient(circle, #60A5FA 0%, transparent 70%)'}} />
+        <div className="absolute top-[40%] right-[20%] w-[200px] h-[200px] rounded-full opacity-10" style={{background:'radial-gradient(circle, #3B82F6 0%, transparent 70%)'}} />
         
         <div className="relative z-10 flex flex-col justify-center px-14 xl:px-20 py-12 w-full">
           {/* Logo + Brand */}

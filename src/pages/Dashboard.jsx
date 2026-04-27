@@ -73,16 +73,16 @@ export default function Dashboard() {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatsCard icon={<HiOutlineSearch className="w-5 h-5" />} label="Investigations" value={stats.totalSearches} color="brand" loading={loadingStats} />
-        <StatsCard icon={<HiOutlineDocumentReport className="w-5 h-5" />} label="Saved Reports" value={stats.savedReports} color="emerald" loading={loadingStats} />
-        <StatsCard icon={<HiOutlineStar className="w-5 h-5" />} label="Searches Today" value={isFree ? `${usedToday}/${dailyLimit}` : `${usedToday}`} color="amber" loading={loadingStats} />
+        <StatsCard icon={<HiOutlineDocumentReport className="w-5 h-5" />} label="Saved Reports" value={stats.savedReports} color="sky" loading={loadingStats} />
+        <StatsCard icon={<HiOutlineStar className="w-5 h-5" />} label="Searches Today" value={isFree ? `${usedToday}/${dailyLimit}` : `${usedToday}`} color="indigo" loading={loadingStats} />
       </div>
 
       {/* Usage bar */}
       {isFree && (
-        <div className="glass-card p-5" style={{borderLeft:'3px solid #F59E42'}}>
+        <div className="glass-card p-5" style={{borderLeft:'3px solid #5B8DEF'}}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <HiOutlineLightningBolt className="w-4 h-4 text-amber-500" />
+              <HiOutlineLightningBolt className="w-4 h-4 text-blue-400" />
               <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--color-text)' }}>Daily Usage</span>
             </div>
             <span className="text-xs font-mono" style={{ color: 'var(--color-text-secondary)' }}>
@@ -92,13 +92,13 @@ export default function Dashboard() {
           <div className="w-full h-2 rounded-full overflow-hidden" style={{background:'var(--color-surface-hover)'}}>
             <div
               className={`h-full rounded-full transition-all duration-500 ${
-                usagePercent >= 80 ? 'bg-red-500' : usagePercent >= 50 ? 'bg-amber-500' : 'bg-brand-500'
+                usagePercent >= 80 ? 'bg-blue-300' : usagePercent >= 50 ? 'bg-sky-400' : 'bg-brand-500'
               }`}
               style={{ width: `${usagePercent}%` }}
             />
           </div>
           {usagePercent >= 80 && (
-            <p className="mt-2 text-[10px] text-amber-500 font-semibold">
+            <p className="mt-2 text-[10px] text-blue-400 font-semibold">
               Running low! <Link to="/billing" className="text-brand-500 underline">Upgrade to Pro</Link> for unlimited scans.
             </p>
           )}
@@ -110,8 +110,8 @@ export default function Dashboard() {
         <h2 className="text-base font-bold mb-4" style={{ color: 'var(--color-text)' }}>Quick Access</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <QuickTool to="/tools/osint" icon={<HiOutlineShieldCheck className="w-5 h-5" />} name="OSINT Investigation" desc="Email, domain & IP intelligence" gradient="from-brand-500 to-brand-700" />
-          <QuickTool to="/tools/xss" icon={<HiOutlineCode className="w-5 h-5" />} name="XSS Arsenal" desc="500+ cross-site scripting payloads" gradient="from-amber-500 to-orange-600" />
-          <QuickTool to="/tools/subdomain" icon={<HiOutlineGlobeAlt className="w-5 h-5" />} name="Subdomain Finder" desc="Enumerate target subdomains" gradient="from-emerald-500 to-teal-600" />
+          <QuickTool to="/tools/xss" icon={<HiOutlineCode className="w-5 h-5" />} name="XSS Arsenal" desc="500+ cross-site scripting payloads" gradient="from-blue-400 to-blue-600" />
+          <QuickTool to="/tools/subdomain" icon={<HiOutlineGlobeAlt className="w-5 h-5" />} name="Subdomain Finder" desc="Enumerate target subdomains" gradient="from-sky-400 to-blue-500" />
         </div>
       </div>
 
@@ -203,7 +203,7 @@ export default function Dashboard() {
         <div className="glass-card overflow-hidden">
           <div className="relative p-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="absolute inset-0 opacity-[0.03]">
-              <div className="absolute inset-0 rounded-2xl" style={{background:'linear-gradient(135deg, #4F6EF7, #A855F7)'}} />
+              <div className="absolute inset-0 rounded-2xl" style={{background:'linear-gradient(135deg, #4F6EF7, #60A5FA)'}} />
             </div>
             <div className="relative z-10">
               <h3 className="text-base font-bold mb-1" style={{ color: 'var(--color-text)' }}>Unlock Full Potential</h3>
@@ -225,8 +225,8 @@ export default function Dashboard() {
 function StatsCard({ icon, label, value, color, loading }) {
   const colors = {
     brand: 'bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400',
-    emerald: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400',
-    amber: 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400',
+    sky: 'bg-sky-50 text-sky-600 dark:bg-sky-900/20 dark:text-sky-400',
+    indigo: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400',
   };
 
   return (

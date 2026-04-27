@@ -65,7 +65,7 @@ export default function Register() {
       {/* Left — Plans overview */}
       <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden" style={{ background: '#080C18' }}>
         <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] rounded-full opacity-20" style={{background:'radial-gradient(circle, #4F6EF7 0%, transparent 70%)'}} />
-        <div className="absolute bottom-[-15%] left-[-5%] w-[400px] h-[400px] rounded-full opacity-15" style={{background:'radial-gradient(circle, #A855F7 0%, transparent 70%)'}} />
+        <div className="absolute bottom-[-15%] left-[-5%] w-[400px] h-[400px] rounded-full opacity-15" style={{background:'radial-gradient(circle, #60A5FA 0%, transparent 70%)'}} />
 
         <div className="relative z-10 flex flex-col justify-center px-14 xl:px-20 py-12 w-full">
           {/* Logo */}
@@ -88,12 +88,12 @@ export default function Register() {
           <div className="grid grid-cols-2 gap-4">
             {/* Free */}
             <div className="rounded-xl border border-white/[0.06] p-5" style={{ background: 'rgba(255,255,255,0.02)' }}>
-              <p className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1">Free Forever</p>
+              <p className="text-[10px] font-bold text-sky-400 uppercase tracking-widest mb-1">Free Forever</p>
               <p className="text-2xl font-bold text-white mb-4">₹0</p>
               <ul className="space-y-2.5">
                 {FREE_FEATURES.map(f => (
                   <li key={f} className="flex items-start gap-2 text-[11px] text-slate-400">
-                    <HiOutlineCheck className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <HiOutlineCheck className="w-3.5 h-3.5 text-sky-400 flex-shrink-0 mt-0.5" />
                     <span>{f}</span>
                   </li>
                 ))}

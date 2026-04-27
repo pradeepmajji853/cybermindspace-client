@@ -17,7 +17,7 @@
     --color-sidebar-bg: #FAFBFE;
     --color-sidebar-text: #4B5675;
     --color-sidebar-active: #EEF1FB;
-    --color-accent: #F59E42;
+    --color-accent: #5B8DEF;
     --color-card-glow: rgba(79, 110, 247, 0.07);
     --radius-card: 16px;
     --radius-btn: 12px;
@@ -180,25 +180,25 @@
   }
 
   .badge-green {
-    @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400;
+    @apply bg-sky-50 text-sky-700 dark:bg-sky-900/20 dark:text-sky-400;
   }
 
   .badge-red {
-    @apply bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400;
+    @apply bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300;
   }
 
   .badge-yellow {
-    @apply bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400;
+    @apply bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-400;
   }
 
   .badge-purple {
-    @apply bg-purple-50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-400;
+    @apply bg-slate-50 text-slate-700 dark:bg-slate-900/20 dark:text-slate-400;
   }
 
   /* ─── Risk ─── */
-  .risk-low { @apply text-emerald-500; }
-  .risk-medium { @apply text-amber-500; }
-  .risk-high { @apply text-red-500; }
+  .risk-low { @apply text-blue-400; }
+  .risk-medium { @apply text-sky-400; }
+  .risk-high { @apply text-blue-300; }
 
   /* ─── Sidebar ─── */
   .sidebar-link {
@@ -235,11 +235,11 @@
 @layer utilities {
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #4F6EF7, #A855F7);
+    background-image: linear-gradient(135deg, #4F6EF7, #60A5FA);
   }
 
   .border-gradient {
-    border-image: linear-gradient(135deg, #4F6EF7, #A855F7) 1;
+    border-image: linear-gradient(135deg, #4F6EF7, #60A5FA) 1;
   }
 
   .bg-gradient-brand {
