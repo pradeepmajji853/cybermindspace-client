@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { TOOLS_PART1 } from '../data/academyTools1';
-import { TOOLS_PART2 } from '../data/academyTools2';
+import { ACADEMY_BATCH1 } from '../data/academyData1';
+import { ACADEMY_BATCH2 } from '../data/academyData2';
+import { ACADEMY_BATCH3 } from '../data/academyData3';
+import { ACADEMY_BATCH4 } from '../data/academyData4';
+import { ACADEMY_BATCH5 } from '../data/academyData5';
+import { ACADEMY_BATCH6 } from '../data/academyData6';
 import { HiOutlineSearch, HiOutlineArrowRight, HiOutlineExternalLink, HiOutlineStar, HiOutlineAcademicCap, HiOutlineBookOpen, HiOutlineChevronRight } from 'react-icons/hi';
 
-const ALL_TOOLS = [...TOOLS_PART1, ...TOOLS_PART2];
+const ALL_TOOLS = [...ACADEMY_BATCH1, ...ACADEMY_BATCH2, ...ACADEMY_BATCH3, ...ACADEMY_BATCH4, ...ACADEMY_BATCH5, ...ACADEMY_BATCH6];
 
 export default function Education() {
   const { userProfile } = useAuth();
@@ -58,7 +62,7 @@ export default function Education() {
                 <div className="min-w-0 flex-1">
                   <p className="text-[11px] font-bold truncate leading-tight">{tool.name}</p>
                   <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider inline-block mt-0.5 ${
-                    isActive ? 'bg-white/20 text-white' : tool.tier === 'Free' ? 'bg-emerald-500/10 text-emerald-500' : tool.tier === 'Elite' ? 'bg-purple-500/10 text-purple-500' : 'bg-brand-500/10 text-brand-500'
+                    isActive ? 'bg-white/20 text-white' : tool.tier === 'Free' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-brand-500/10 text-brand-500'
                   }`}>{tool.tier}</span>
                 </div>
                 <HiOutlineChevronRight className={`w-3 h-3 flex-shrink-0 transition-transform ${isActive ? 'translate-x-0.5' : 'opacity-30'}`} />

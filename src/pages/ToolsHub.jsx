@@ -126,8 +126,8 @@ const TOOLS = [
     description: 'Identify CMS, frameworks, and infrastructure of any website.',
     icon: <HiOutlineSparkles className="w-6 h-6" />,
     path: '/tools/osint?type=osint',
-    badge: 'Elite',
-    tier: 'elite',
+    badge: 'Pro',
+    tier: 'pro',
   },
   {
     id: 'takeover',
@@ -136,8 +136,8 @@ const TOOLS = [
     description: 'Check for dangling CNAMEs pointing to expired cloud services.',
     icon: <HiOutlineShieldExclamation className="w-6 h-6" />,
     path: '/tools/osint?type=takeover',
-    badge: 'Elite',
-    tier: 'elite',
+    badge: 'Pro',
+    tier: 'pro',
   },
   {
     id: 'whois-privacy',
@@ -146,8 +146,8 @@ const TOOLS = [
     description: 'Identify exposed registrant details and contact information.',
     icon: <HiOutlineSearch className="w-6 h-6" />,
     path: '/tools/osint?type=whois-privacy',
-    badge: 'Elite',
-    tier: 'elite',
+    badge: 'Pro',
+    tier: 'pro',
   },
 
   // Network — Mixed tiers
@@ -178,8 +178,8 @@ const TOOLS = [
     description: 'Visualize the network path to a remote host.',
     icon: <HiOutlineArrowRight className="w-6 h-6" />,
     path: '/tools/traceroute',
-    badge: 'Elite',
-    tier: 'elite',
+    badge: 'Pro',
+    tier: 'pro',
   },
 
   // Automation — Pro tier
@@ -210,7 +210,6 @@ function ToolCard({ tool }) {
   const badgeColors = {
     Free: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20',
     Pro: 'bg-brand-500/10 text-brand-500 border-brand-500/20',
-    Elite: 'bg-purple-500/10 text-purple-500 border-purple-500/20',
   };
 
   return (

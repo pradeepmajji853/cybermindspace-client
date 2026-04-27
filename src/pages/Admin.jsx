@@ -60,7 +60,7 @@ export default function Admin() {
 
       <div className="glass-card p-6 space-y-4">
         <h3 className="text-sm font-bold flex items-center gap-2">
-          <HiOutlineUserAdd className="text-brand-500" /> Grant Pro Access Manualy
+          <HiOutlineUserAdd className="text-brand-500" /> Grant Pro Access Manually
         </h3>
         <div className="flex gap-3">
           <div className="relative flex-1">

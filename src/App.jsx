@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
@@ -22,6 +22,7 @@ import HttpBuilder from './pages/HttpBuilder';
 import RegexGenerator from './pages/RegexGenerator';
 import Traceroute from './pages/Traceroute';
 import EmailBreachChecker from './pages/EmailBreachChecker';
+import { HiOutlineLockClosed, HiOutlineLightningBolt, HiOutlineArrowLeft } from 'react-icons/hi';
 
 const ADMIN_EMAILS = [
   'admin@cybermindspace.com',
@@ -54,25 +55,51 @@ function ProtectedRoute({ children }) {
 }
 
 /**
- * PlanGate: Soft gate that shows upgrade prompt instead of redirecting.
- * requiredPlan: 'pro' or 'elite'
+ * PlanGate: Shows an inline upgrade prompt instead of redirecting.
+ * Free users see a message + upgrade button. Pro/admin users pass through.
  */
-function PlanGate({ children, requiredPlan = 'pro' }) {
+function PlanGate({ children, feature = 'this feature' }) {
   const { userProfile, loading } = useAuth();
   
   if (loading) return null;
   
   const isAdmin = userProfile && ADMIN_EMAILS.includes(userProfile.email);
   const plan = userProfile?.plan || 'free';
-  const planRank = { free: 0, pro: 1, elite: 2 };
-  const requiredRank = planRank[requiredPlan] || 1;
-  const userRank = planRank[plan] || 0;
 
-  if (isAdmin || userRank >= requiredRank) {
+  if (isAdmin || plan === 'pro' || plan === 'elite') {
     return children;
   }
   
-  return <Navigate to="/billing" />;
+  // Show inline upgrade message instead of redirecting
+  return (
+    <div className="pro-gate animate-fade-in">
+      <div className="glass-card max-w-md w-full p-10 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-brand flex items-center justify-center mx-auto mb-6 shadow-glow">
+          <HiOutlineLockClosed className="w-8 h-8 text-white" />
+        </div>
+        <h2 className="text-xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
+          Pro Feature
+        </h2>
+        <p className="text-sm mb-8 leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+          <span className="font-semibold capitalize">{feature}</span> is available exclusively for CyberMindSpace Pro members. Upgrade to unlock all tools, unlimited scans, and premium content.
+        </p>
+        <Link
+          to="/billing"
+          className="btn-primary w-full py-3.5 text-sm justify-center mb-3 shadow-glow"
+        >
+          <HiOutlineLightningBolt className="w-5 h-5" />
+          Upgrade to Pro — ₹199/mo
+        </Link>
+        <Link
+          to="/dashboard"
+          className="btn-ghost w-full py-2.5 justify-center text-xs"
+        >
+          <HiOutlineArrowLeft className="w-4 h-4" />
+          Back to Dashboard
+        </Link>
+      </div>
+    </div>
+  );
 }
 
 function AppRoutes() {
@@ -103,7 +130,7 @@ function AppRoutes() {
                 {/* Free access — all users */}
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/tools" element={<ToolsHub />} />
-                <Route path="/learn" element={<PlanGate requiredPlan="pro"><Education /></PlanGate>} />
+                <Route path="/learn" element={<PlanGate feature="Academy"><Education /></PlanGate>} />
                 <Route path="/history" element={<History />} />
                 <Route path="/billing" element={<Billing />} />
 
@@ -114,15 +141,13 @@ function AppRoutes() {
                 <Route path="/tools/xss" element={<XssPayloads />} />
 
                 {/* Pro tools */}
-                <Route path="/tools/sqli" element={<PlanGate requiredPlan="pro"><SqliGenerator /></PlanGate>} />
-                <Route path="/tools/jwt" element={<PlanGate requiredPlan="pro"><JwtAnalyzer /></PlanGate>} />
-                <Route path="/tools/http-builder" element={<PlanGate requiredPlan="pro"><HttpBuilder /></PlanGate>} />
-                <Route path="/tools/regex" element={<PlanGate requiredPlan="pro"><RegexGenerator /></PlanGate>} />
-                <Route path="/tools/email-breach" element={<PlanGate requiredPlan="pro"><EmailBreachChecker /></PlanGate>} />
-                <Route path="/reports" element={<PlanGate requiredPlan="pro"><Reports /></PlanGate>} />
-
-                {/* Elite tools */}
-                <Route path="/tools/traceroute" element={<PlanGate requiredPlan="elite"><Traceroute /></PlanGate>} />
+                <Route path="/tools/sqli" element={<PlanGate feature="SQLi Payload Generator"><SqliGenerator /></PlanGate>} />
+                <Route path="/tools/jwt" element={<PlanGate feature="JWT Decoder"><JwtAnalyzer /></PlanGate>} />
+                <Route path="/tools/http-builder" element={<PlanGate feature="HTTP Request Builder"><HttpBuilder /></PlanGate>} />
+                <Route path="/tools/regex" element={<PlanGate feature="Regex Generator"><RegexGenerator /></PlanGate>} />
+                <Route path="/tools/email-breach" element={<PlanGate feature="Email Breach Checker"><EmailBreachChecker /></PlanGate>} />
+                <Route path="/tools/traceroute" element={<PlanGate feature="Traceroute Visualizer"><Traceroute /></PlanGate>} />
+                <Route path="/reports" element={<PlanGate feature="Reports"><Reports /></PlanGate>} />
 
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Routes>
@@ -146,9 +171,10 @@ export default function App() {
                 background: 'var(--color-surface)',
                 color: 'var(--color-text)',
                 border: '1px solid var(--color-border)',
-                borderRadius: '12px',
+                borderRadius: '14px',
                 fontSize: '13px',
                 fontFamily: 'Inter, sans-serif',
+                boxShadow: '0 8px 32px -8px rgba(0,0,0,0.12)',
               },
             }}
           />

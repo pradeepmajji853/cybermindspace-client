@@ -13,7 +13,6 @@ import {
   HiOutlineMoon,
   HiOutlineMenu,
   HiOutlineX,
-  HiOutlineShieldCheck,
   HiOutlineLightningBolt,
   HiOutlineBookOpen,
 } from 'react-icons/hi';
@@ -25,17 +24,6 @@ const NAV_ITEMS = [
   { to: '/history', label: 'History', icon: HiOutlineClock },
   { to: '/reports', label: 'Reports', icon: HiOutlineDocumentReport },
   { to: '/billing', label: 'Billing', icon: HiOutlineCreditCard },
-];
-
-const ADMIN_EMAILS = [
-  'admin@cybermindspace.com',
-  'majjipradeepkumar@gmail.com',
-  'almadadali786@gmail.com',
-  'dhyeybhuva2003@gmail.com',
-  'pateltushar1734@gmail.com',
-  'acromatic.tech@gmail.com',
-  'pradeepmajji853@gmail.com',
-  'majjipradeep4677@gmail.com'
 ];
 
 export default function Layout({ children }) {
@@ -50,16 +38,14 @@ export default function Layout({ children }) {
   };
 
   const plan = userProfile?.plan || 'free';
-  const planLabel = plan === 'elite' ? '🔥 Elite Plan' : plan === 'pro' ? '⭐ Pro Plan' : 'Free Plan';
-  const planBadgeClass = plan === 'elite' ? 'badge-purple' : plan === 'pro' ? 'badge-blue' : 'badge-yellow';
-  const showUpgrade = plan === 'free';
+  const isPro = plan === 'pro' || plan === 'elite';
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--color-bg)' }}>
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -67,28 +53,29 @@ export default function Layout({ children }) {
       {/* Sidebar */}
       <aside
         className={`
-          fixed lg:static inset-y-0 left-0 z-50 w-64 flex flex-col transition-transform duration-300 ease-in-out
+          fixed lg:static inset-y-0 left-0 z-50 w-[260px] flex flex-col transition-transform duration-300 ease-in-out
           lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         `}
         style={{ background: 'var(--color-sidebar-bg)', borderRight: '1px solid var(--color-border)' }}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3 px-5 py-5 border-b" style={{ borderColor: 'var(--color-border)' }}>
-          <img src="/cybermindspace.webp" alt="CyberMindSpace" className="w-9 h-9 rounded-xl shadow-glow-sm object-cover" />
-          <div>
-            <h1 className="text-sm font-bold tracking-tight" style={{ color: 'var(--color-text)' }}>CyberMindSpace</h1>
-            <p className="text-[10px] font-medium tracking-wider uppercase" style={{ color: 'var(--color-text-secondary)' }}>Security Tools</p>
+        <div className="flex items-center gap-3 px-5 h-16 border-b" style={{ borderColor: 'var(--color-border)' }}>
+          <img src="/cybermindspace.webp" alt="CyberMindSpace" className="w-8 h-8 rounded-xl shadow-glow-sm object-cover" />
+          <div className="flex-1 min-w-0">
+            <h1 className="text-[13px] font-bold tracking-tight truncate" style={{ color: 'var(--color-text)' }}>CyberMindSpace</h1>
+            <p className="text-[9px] font-semibold tracking-widest uppercase" style={{ color: 'var(--color-text-secondary)' }}>Security Platform</p>
           </div>
           <button
-            className="ml-auto lg:hidden p-1 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-700"
+            className="lg:hidden p-1.5 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-700 transition-colors"
             onClick={() => setSidebarOpen(false)}
           >
-            <HiOutlineX className="w-5 h-5" />
+            <HiOutlineX className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
           </button>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+        {/* Navigation */}
+        <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
+          <p className="px-4 mb-2 text-[9px] font-bold uppercase tracking-[0.15em]" style={{ color: 'var(--color-text-secondary)', opacity: 0.5 }}>Navigation</p>
           {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
@@ -96,47 +83,45 @@ export default function Layout({ children }) {
               className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
               onClick={() => setSidebarOpen(false)}
             >
-              <Icon className="w-5 h-5 flex-shrink-0" />
+              <Icon className="w-[18px] h-[18px] flex-shrink-0" />
               <span>{label}</span>
             </NavLink>
           ))}
         </nav>
 
         {/* Bottom section */}
-        <div className="px-3 py-4 space-y-3 border-t" style={{ borderColor: 'var(--color-border)' }}>
-          {/* Upgrade CTA for free users */}
-          {showUpgrade && (
+        <div className="px-3 pb-4 space-y-2.5 border-t pt-4" style={{ borderColor: 'var(--color-border)' }}>
+          {/* Upgrade CTA */}
+          {!isPro && (
             <Link
               to="/billing"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-gradient-brand text-white text-xs font-bold transition-all hover:shadow-glow"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-white text-xs font-semibold transition-all hover:shadow-glow"
+              style={{ background: 'linear-gradient(135deg, #4F6EF7 0%, #3451D1 100%)' }}
             >
-              <HiOutlineLightningBolt className="w-5 h-5" />
+              <HiOutlineLightningBolt className="w-4 h-4" />
               <div>
-                <p className="text-[11px] font-bold">Upgrade to Pro</p>
-                <p className="text-[9px] opacity-70">Unlock all tools</p>
+                <p className="text-[11px] font-bold leading-tight">Upgrade to Pro</p>
+                <p className="text-[9px] opacity-60">₹199/mo — Unlock everything</p>
               </div>
             </Link>
           )}
 
           {/* Theme toggle */}
-          <button
-            onClick={toggleTheme}
-            className="sidebar-link w-full"
-          >
+          <button onClick={toggleTheme} className="sidebar-link w-full">
             {darkMode ? (
-              <HiOutlineSun className="w-5 h-5 text-amber-400" />
+              <HiOutlineSun className="w-[18px] h-[18px] text-amber-400" />
             ) : (
-              <HiOutlineMoon className="w-5 h-5 text-brand-600" />
+              <HiOutlineMoon className="w-[18px] h-[18px] text-brand-600" />
             )}
             <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
           </button>
 
           {/* User info */}
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: 'var(--color-surface-hover, rgba(0,0,0,0.03))' }}>
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: 'var(--color-surface-hover)' }}>
             {user?.photoURL ? (
-              <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full" />
+              <img src={user.photoURL} alt="" className="w-8 h-8 rounded-full ring-2 ring-brand-500/20" />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-gradient-brand flex items-center justify-center text-white text-xs font-bold">
+              <div className="w-8 h-8 rounded-full bg-gradient-brand flex items-center justify-center text-white text-xs font-bold shadow-sm">
                 {(userProfile?.displayName || user?.email || 'U')[0].toUpperCase()}
               </div>
             )}
@@ -144,8 +129,8 @@ export default function Layout({ children }) {
               <p className="text-xs font-semibold truncate" style={{ color: 'var(--color-text)' }}>
                 {userProfile?.displayName || 'User'}
               </p>
-              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${planBadgeClass}`}>
-                {planLabel}
+              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md ${isPro ? 'badge-blue' : 'badge-yellow'}`}>
+                {isPro ? '⭐ Pro Plan' : 'Free Plan'}
               </span>
             </div>
           </div>
@@ -155,22 +140,22 @@ export default function Layout({ children }) {
             onClick={handleLogout}
             className="sidebar-link w-full text-red-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10"
           >
-            <HiOutlineLogout className="w-5 h-5" />
+            <HiOutlineLogout className="w-[18px] h-[18px]" />
             <span>Sign Out</span>
           </button>
         </div>
       </aside>
 
-      {/* Main content */}
+      {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top bar (mobile) */}
+        {/* Mobile header */}
         <header
-          className="lg:hidden flex items-center gap-3 px-4 py-3 border-b"
+          className="lg:hidden flex items-center gap-3 px-4 h-14 border-b"
           style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}
         >
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800"
+            className="p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors"
           >
             <HiOutlineMenu className="w-5 h-5" style={{ color: 'var(--color-text)' }} />
           </button>
@@ -181,7 +166,7 @@ export default function Layout({ children }) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-7">
           {children}
         </main>
       </div>

@@ -7,39 +7,28 @@ import toast from 'react-hot-toast';
 export default function UpgradeModal({ show, onClose, trigger }) {
   const { userProfile, refreshProfile } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState('pro');
 
   if (!show) return null;
 
-  const plans = [
-    {
-      id: 'pro',
-      name: 'Pro',
-      price: '₹299',
-      period: '/month',
-      features: ['Unlimited scans', 'Full results', 'All tools unlocked', 'Basic report exports'],
-      popular: true,
-    },
-    {
-      id: 'elite',
-      name: 'Elite',
-      price: '₹799',
-      period: '/month',
-      features: ['Everything in Pro', 'Subdomain Takeover', 'Tech Stack Detection', 'Unlimited PDF exports', 'Priority processing'],
-      popular: false,
-    },
+  const features = [
+    'Unlimited scans',
+    'All 18 tools unlocked',
+    'Full OSINT results',
+    'Pro Academy (18 guides)',
+    'Unlimited PDF exports',
+    'Priority processing',
   ];
 
-  const handleUpgrade = async (planType) => {
+  const handleUpgrade = async () => {
     setLoading(true);
     try {
-      const { data } = await client.post('/payment/create-order', { planType });
+      const { data } = await client.post('/payment/create-order', { planType: 'pro' });
       const options = {
         key: data.key,
         order_id: data.orderId,
         name: 'CyberMindSpace',
-        description: `${planType === 'elite' ? 'Elite' : 'Pro'} Plan`,
-        theme: { color: '#2563EB' },
+        description: 'Pro Plan',
+        theme: { color: '#4F6EF7' },
         handler: async function (response) {
           try {
             await client.post('/payment/verify', {
@@ -48,7 +37,7 @@ export default function UpgradeModal({ show, onClose, trigger }) {
               razorpay_signature: response.razorpay_signature,
             });
             await refreshProfile();
-            toast.success(`🎉 Welcome to ${planType === 'elite' ? 'Elite' : 'Pro'}!`);
+            toast.success('🎉 Welcome to CyberMindSpace Pro!');
             onClose();
           } catch (err) {
             toast.error('Payment verification failed.');
@@ -78,81 +67,57 @@ export default function UpgradeModal({ show, onClose, trigger }) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-      {/* Modal */}
-      <div className="relative w-full max-w-2xl glass-card overflow-hidden animate-slide-up shadow-2xl">
-        {/* Close */}
-        <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-700 z-10">
+      <div className="relative w-full max-w-md glass-card overflow-hidden animate-scale-in shadow-2xl">
+        <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-lg hover:bg-surface-200 dark:hover:bg-surface-700 z-10 transition-colors">
           <HiOutlineX className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
         </button>
 
-        {/* Header */}
-        <div className="p-8 pb-4 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] font-bold uppercase tracking-widest mb-4">
-            <HiOutlineLockClosed className="w-3 h-3" />
+        <div className="p-8 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-brand flex items-center justify-center mx-auto mb-5 shadow-glow">
+            <HiOutlineLockClosed className="w-7 h-7 text-white" />
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] font-bold uppercase tracking-widest mb-4">
             {trigger || 'Premium Feature'}
           </div>
-          <h2 className="text-2xl font-black mb-2" style={{ color: 'var(--color-text)' }}>
-            Unlock Full Power
+          <h2 className="text-xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
+            Upgrade to Pro
           </h2>
-          <p className="text-sm opacity-60 max-w-md mx-auto">
-            You've reached the free tier limit. Upgrade to get unlimited scans, full results, and advanced tools.
+          <p className="text-sm leading-relaxed mb-6" style={{ color: 'var(--color-text-secondary)' }}>
+            Unlock the full power of CyberMindSpace with unlimited access to all tools and features.
           </p>
-        </div>
 
-        {/* Plans */}
-        <div className="px-8 pb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {plans.map(plan => (
-            <div
-              key={plan.id}
-              className={`relative rounded-2xl p-6 border-2 cursor-pointer transition-all ${
-                selectedPlan === plan.id
-                  ? 'border-brand-500 bg-brand-500/5 shadow-glow-sm'
-                  : 'border-border hover:border-brand-500/30'
-              }`}
-              onClick={() => setSelectedPlan(plan.id)}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-500 text-white text-[9px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wider">
-                  Most Popular
-                </div>
-              )}
-              <div className="flex items-baseline gap-1 mb-1">
-                <span className="text-2xl font-black" style={{ color: 'var(--color-text)' }}>{plan.price}</span>
-                <span className="text-xs opacity-40">{plan.period}</span>
-              </div>
-              <p className="text-xs font-bold mb-4" style={{ color: 'var(--color-text)' }}>{plan.name}</p>
-              <ul className="space-y-2">
-                {plan.features.map(f => (
-                  <li key={f} className="flex items-center gap-2 text-[11px]">
-                    <HiOutlineCheck className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                    <span style={{ color: 'var(--color-text-secondary)' }}>{f}</span>
-                  </li>
-                ))}
-              </ul>
+          <div className="text-left glass-card p-5 mb-6">
+            <div className="flex items-baseline gap-1 mb-4">
+              <span className="text-3xl font-bold" style={{ color: 'var(--color-text)' }}>₹199</span>
+              <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>/month</span>
             </div>
-          ))}
-        </div>
+            <ul className="space-y-2.5">
+              {features.map(f => (
+                <li key={f} className="flex items-center gap-2.5 text-[12px]">
+                  <HiOutlineCheck className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                  <span style={{ color: 'var(--color-text)' }}>{f}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        {/* CTA */}
-        <div className="px-8 pb-8">
           <button
-            onClick={() => handleUpgrade(selectedPlan)}
+            onClick={handleUpgrade}
             disabled={loading}
-            className="btn-primary w-full py-4 text-sm shadow-glow flex justify-center items-center gap-3"
+            className="btn-primary w-full py-3.5 text-sm shadow-glow justify-center"
           >
             {loading ? (
               <div className="animate-spin w-5 h-5 border-2 border-white/20 border-t-white rounded-full" />
             ) : (
               <>
                 <HiOutlineLightningBolt className="w-5 h-5" />
-                Upgrade to {selectedPlan === 'elite' ? 'Elite' : 'Pro'} — {selectedPlan === 'elite' ? '₹799' : '₹299'}/mo
+                Upgrade to Pro — ₹199/mo
               </>
             )}
           </button>
-          <p className="text-[10px] text-center opacity-30 mt-3">Secured by Razorpay. Cancel anytime.</p>
+          <p className="text-[10px] opacity-30 mt-3">Secured by Razorpay. Cancel anytime.</p>
         </div>
       </div>
     </div>
