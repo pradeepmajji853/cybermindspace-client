@@ -130,9 +130,10 @@ function AppRoutes() {
                 {/* Free access — all users */}
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/tools" element={<ToolsHub />} />
-                <Route path="/learn" element={<PlanGate feature="Academy"><Education /></PlanGate>} />
+                <Route path="/learn" element={<Education />} />
                 <Route path="/history" element={<History />} />
                 <Route path="/billing" element={<Billing />} />
+                <Route path="/reports" element={<Reports />} />
 
                 {/* Free tools (with limited results) */}
                 <Route path="/tools/osint" element={<OsintTool />} />
@@ -147,7 +148,6 @@ function AppRoutes() {
                 <Route path="/tools/regex" element={<PlanGate feature="Regex Generator"><RegexGenerator /></PlanGate>} />
                 <Route path="/tools/email-breach" element={<PlanGate feature="Email Breach Checker"><EmailBreachChecker /></PlanGate>} />
                 <Route path="/tools/traceroute" element={<PlanGate feature="Traceroute Visualizer"><Traceroute /></PlanGate>} />
-                <Route path="/reports" element={<PlanGate feature="Reports"><Reports /></PlanGate>} />
 
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Routes>
