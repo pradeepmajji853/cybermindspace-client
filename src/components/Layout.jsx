@@ -15,11 +15,13 @@ import {
   HiOutlineX,
   HiOutlineLightningBolt,
   HiOutlineBookOpen,
+  HiOutlineSearch,
 } from 'react-icons/hi';
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: HiOutlineViewGrid },
-  { to: '/tools', label: 'Tools', icon: HiOutlineCube },
+  { to: '/recon', label: 'Recon Engine', icon: HiOutlineSearch, badge: 'New' },
+  { to: '/tools', label: 'Advanced Tools', icon: HiOutlineCube },
   { to: '/learn', label: 'Academy', icon: HiOutlineBookOpen },
   { to: '/history', label: 'History', icon: HiOutlineClock },
   { to: '/reports', label: 'Reports', icon: HiOutlineDocumentReport },
@@ -76,7 +78,7 @@ export default function Layout({ children }) {
         {/* Navigation */}
         <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
           <p className="px-4 mb-2 text-[9px] font-bold uppercase tracking-[0.15em]" style={{ color: 'var(--color-text-secondary)', opacity: 0.5 }}>Navigation</p>
-          {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
+          {NAV_ITEMS.map(({ to, label, icon: Icon, badge }) => (
             <NavLink
               key={to}
               to={to}
@@ -84,7 +86,12 @@ export default function Layout({ children }) {
               onClick={() => setSidebarOpen(false)}
             >
               <Icon className="w-[18px] h-[18px] flex-shrink-0" />
-              <span>{label}</span>
+              <span className="flex-1">{label}</span>
+              {badge && (
+                <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-gradient-brand text-white tracking-widest uppercase">
+                  {badge}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -101,7 +108,7 @@ export default function Layout({ children }) {
               <HiOutlineLightningBolt className="w-4 h-4" />
               <div>
                 <p className="text-[11px] font-bold leading-tight">Upgrade to Pro</p>
-                <p className="text-[9px] opacity-60">₹199/mo — Unlock everything</p>
+                <p className="text-[9px] opacity-60">₹499/mo — Unlock the hunter</p>
               </div>
             </Link>
           )}

@@ -2,265 +2,383 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
-import { HiOutlineSearch, HiOutlineDocumentReport, HiOutlineStar, HiOutlineLightningBolt, HiOutlineArrowRight, HiOutlineShieldCheck, HiOutlineCode, HiOutlineLockClosed, HiOutlineGlobeAlt, HiOutlineCube } from 'react-icons/hi';
+import {
+  HiOutlineSearch,
+  HiOutlineLightningBolt,
+  HiOutlineLockClosed,
+  HiOutlineArrowRight,
+  HiOutlineFire,
+  HiOutlineShieldExclamation,
+  HiOutlineGlobe,
+  HiOutlineChartBar,
+  HiOutlineSparkles,
+  HiOutlineTrendingUp,
+  HiOutlineClock,
+} from 'react-icons/hi';
 
 export default function Dashboard() {
   const { userProfile } = useAuth();
-  const [stats, setStats] = useState({ totalSearches: 0, savedReports: 0, recentActivity: [] });
-  const [loadingStats, setLoadingStats] = useState(true);
+  const [data, setData] = useState({ scans: [], stats: { totalScans: 0, totalVulns: 0, totalTakeovers: 0, avgRisk: 0, hunterScore: 0, streak: 0, bestStreak: 0 } });
+  const [board, setBoard] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadStats();
+    let active = true;
+    (async () => {
+      try {
+        const [recentRes, boardRes] = await Promise.allSettled([
+          client.get('/recon/recent?limit=10'),
+          client.get('/recon/leaderboard'),
+        ]);
+        if (!active) return;
+        if (recentRes.status === 'fulfilled') setData(recentRes.value.data);
+        if (boardRes.status === 'fulfilled') setBoard(boardRes.value.data.board || []);
+      } catch (err) {
+        console.error('Failed to load dashboard:', err);
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+    return () => { active = false; };
   }, []);
-
-  const loadStats = async () => {
-    try {
-      const [historyRes, reportsRes] = await Promise.allSettled([
-        client.get('/user/history?limit=5'),
-        client.get('/user/reports'),
-      ]);
-
-      setStats({
-        totalSearches: historyRes.status === 'fulfilled' ? historyRes.value.data.count : 0,
-        savedReports: reportsRes.status === 'fulfilled' ? reportsRes.value.data.count : 0,
-        recentActivity: historyRes.status === 'fulfilled' ? historyRes.value.data.history : [],
-      });
-    } catch (err) {
-      console.error('Failed to load stats:', err);
-    } finally {
-      setLoadingStats(false);
-    }
-  };
 
   const plan = userProfile?.plan || 'free';
   const isFree = plan === 'free';
   const dailyLimit = 5;
   const usedToday = userProfile?.searchesToday || 0;
-  const usagePercent = Math.min(100, Math.round((usedToday / dailyLimit) * 100));
+
+  const scans = data.scans || [];
+  const stats = data.stats || {};
+
+  // Targets to hunt = unique recent targets
+  const targets = Array.from(new Map(scans.map((s) => [s.target, s])).values()).slice(0, 6);
+  // Recent findings = scans with verified findings
+  const recentVulnScans = scans
+    .filter((s) => (s.verifiedFindings || s.summary?.vulnCount || 0) > 0)
+    .slice(0, 4);
+
+  // Suggested next action heuristic
+  const suggestion = computeNextAction(scans, isFree);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
-      {/* Welcome */}
-      <div className="glass-card overflow-hidden">
-        <div className="relative p-7 lg:p-8">
-          <div className="absolute inset-0 opacity-[0.03]">
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full blur-[100px]" style={{background:'linear-gradient(135deg, #4F6EF7, #A855F7)'}} />
-          </div>
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl lg:text-[28px] font-bold mb-1.5 tracking-tight" style={{ color: 'var(--color-text)' }}>
-                Welcome back, <span className="text-gradient">{userProfile?.displayName || 'Agent'}</span>
-              </h1>
-              <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                Your cybersecurity command center is ready.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className={`badge ${isFree ? 'badge-yellow' : 'badge-blue'}`}>
-                {isFree ? 'Free Plan' : '⭐ Pro Plan'}
-              </span>
-              {isFree && (
-                <Link to="/billing" className="btn-primary text-xs py-2 px-4">
-                  <HiOutlineLightningBolt className="w-4 h-4" />
-                  Upgrade
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatsCard icon={<HiOutlineSearch className="w-5 h-5" />} label="Investigations" value={stats.totalSearches} color="brand" loading={loadingStats} />
-        <StatsCard icon={<HiOutlineDocumentReport className="w-5 h-5" />} label="Saved Reports" value={stats.savedReports} color="sky" loading={loadingStats} />
-        <StatsCard icon={<HiOutlineStar className="w-5 h-5" />} label="Searches Today" value={isFree ? `${usedToday}/${dailyLimit}` : `${usedToday}`} color="indigo" loading={loadingStats} />
-      </div>
-
-      {/* Usage bar */}
-      {isFree && (
-        <div className="glass-card p-5" style={{borderLeft:'3px solid #5B8DEF'}}>
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <HiOutlineLightningBolt className="w-4 h-4 text-blue-400" />
-              <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--color-text)' }}>Daily Usage</span>
-            </div>
-            <span className="text-xs font-mono" style={{ color: 'var(--color-text-secondary)' }}>
-              {usedToday} of {dailyLimit} scans
-            </span>
-          </div>
-          <div className="w-full h-2 rounded-full overflow-hidden" style={{background:'var(--color-surface-hover)'}}>
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                usagePercent >= 80 ? 'bg-blue-300' : usagePercent >= 50 ? 'bg-sky-400' : 'bg-brand-500'
-              }`}
-              style={{ width: `${usagePercent}%` }}
-            />
-          </div>
-          {usagePercent >= 80 && (
-            <p className="mt-2 text-[10px] text-blue-400 font-semibold">
-              Running low! <Link to="/billing" className="text-brand-500 underline">Upgrade to Pro</Link> for unlimited scans.
+    <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
+      {/* Hero — outcome-focused */}
+      <div className="glass-card overflow-hidden p-7 md:p-8 border-l-4 border-l-brand-500 relative">
+        <div className="absolute top-0 right-0 w-[400px] h-[300px] bg-gradient-brand opacity-10 rounded-full blur-3xl pointer-events-none" />
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-100 mb-2">
+              Find real vulnerabilities. <span className="text-gradient">Generate reports instantly.</span>
+            </h1>
+            <p className="text-sm text-slate-400 max-w-xl">
+              Live validation only. Captured proof. One-click bug-bounty reports. Hours saved per target.
             </p>
-          )}
-        </div>
-      )}
-
-      {/* Quick Access */}
-      <div>
-        <h2 className="text-base font-bold mb-4" style={{ color: 'var(--color-text)' }}>Quick Access</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <QuickTool to="/tools/osint" icon={<HiOutlineShieldCheck className="w-5 h-5" />} name="OSINT Investigation" desc="Email, domain & IP intelligence" gradient="from-brand-500 to-brand-700" />
-          <QuickTool to="/tools/xss" icon={<HiOutlineCode className="w-5 h-5" />} name="XSS Arsenal" desc="500+ cross-site scripting payloads" gradient="from-blue-400 to-blue-600" />
-          <QuickTool to="/tools/subdomain" icon={<HiOutlineGlobeAlt className="w-5 h-5" />} name="Subdomain Finder" desc="Enumerate target subdomains" gradient="from-sky-400 to-blue-500" />
-        </div>
-      </div>
-
-      {/* Locked preview for free */}
-      {isFree && (
-        <div className="glass-card overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/90 dark:to-[#0B0F1A]/90 z-10 pointer-events-none" />
-          <div className="p-6 opacity-30 blur-[2px]">
-            <h3 className="text-sm font-bold mb-3">Pro Tools Preview</h3>
-            <div className="grid grid-cols-3 gap-3">
-              {['SQLi Generator', 'JWT Analyzer', 'HTTP Builder'].map(t => (
-                <div key={t} className="p-3 rounded-xl text-xs font-bold text-center" style={{background:'var(--color-surface-hover)'}}>{t}</div>
-              ))}
-            </div>
           </div>
-          <div className="absolute inset-0 z-20 flex items-center justify-center">
-            <Link to="/billing" className="btn-primary py-3 px-6 text-xs shadow-glow flex items-center gap-2">
-              <HiOutlineLockClosed className="w-4 h-4" />
-              Unlock Pro Tools
-            </Link>
-          </div>
-        </div>
-      )}
-
-      {/* Recent Activity */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-base font-bold" style={{ color: 'var(--color-text)' }}>Recent Activity</h2>
-          <Link to="/history" className="text-xs font-semibold text-brand-500 hover:text-brand-600 transition-colors">
-            View all →
+          <Link to="/recon" className="btn-primary px-5 py-3 text-sm shadow-glow whitespace-nowrap">
+            <HiOutlineLightningBolt className="w-4 h-4" />
+            Run Recon
           </Link>
         </div>
-        <div className="glass-card overflow-hidden">
-          {loadingStats ? (
-            <div className="p-6 space-y-4">
-              {[1,2,3].map(i => (
-                <div key={i} className="flex gap-4">
-                  <div className="skeleton h-4 w-20 rounded" />
-                  <div className="skeleton h-4 flex-1 rounded" />
-                  <div className="skeleton h-4 w-14 rounded" />
-                </div>
-              ))}
-            </div>
-          ) : stats.recentActivity.length === 0 ? (
-            <div className="p-10 text-center">
-              <HiOutlineSearch className="w-9 h-9 mx-auto mb-3" style={{ color: 'var(--color-text-secondary)', opacity: 0.4 }} />
-              <p className="text-sm font-medium mb-4" style={{ color: 'var(--color-text-secondary)' }}>
-                No investigations yet. Start by running a scan!
-              </p>
-              <Link to="/tools/osint" className="btn-primary text-xs py-2 px-4 inline-flex">
-                Start Investigation
-              </Link>
-            </div>
-          ) : (
-            <div className="divide-y" style={{ borderColor: 'var(--color-border)' }}>
-              {stats.recentActivity.map(item => (
-                <div key={item.id} className="flex items-center justify-between px-5 py-3.5 hover:bg-surface-50 dark:hover:bg-surface-800/30 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <span className={`badge ${
-                      item.inputType === 'email' ? 'badge-blue' :
-                      item.inputType === 'ip' ? 'badge-purple' :
-                      item.inputType === 'domain' ? 'badge-green' : 'badge-yellow'
-                    }`}>
-                      {item.inputType}
-                    </span>
-                    <span className="text-sm font-mono" style={{ color: 'var(--color-text)' }}>{item.query}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {item.riskScore !== undefined && (
-                      <span className={`text-xs font-mono ${
-                        item.riskScore <= 30 ? 'risk-low' : item.riskScore <= 60 ? 'risk-medium' : 'risk-high'
-                      }`}>
-                        Risk: {item.riskScore}
-                      </span>
-                    )}
-                    <span className="text-[10px]" style={{ color: 'var(--color-text-secondary)' }}>
-                      {new Date(item.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Pro CTA */}
-      {isFree && (
-        <div className="glass-card overflow-hidden">
-          <div className="relative p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="absolute inset-0 opacity-[0.03]">
-              <div className="absolute inset-0 rounded-2xl" style={{background:'linear-gradient(135deg, #4F6EF7, #60A5FA)'}} />
-            </div>
-            <div className="relative z-10">
-              <h3 className="text-base font-bold mb-1" style={{ color: 'var(--color-text)' }}>Unlock Full Potential</h3>
-              <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                Upgrade to Pro for unlimited scans, full results, and all 18 tools.
-              </p>
-            </div>
-            <Link to="/billing" className="btn-primary whitespace-nowrap relative z-10">
-              <HiOutlineLightningBolt className="w-4 h-4" />
-              View Plans
+      {/* Outcome scoreboard */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Stat icon={<HiOutlineSparkles className="w-5 h-5" />} label="Hunter Score" value={`${stats.hunterScore || 0}/100`} hint={hunterTier(stats.hunterScore)} color="brand" />
+        <Stat icon={<HiOutlineShieldExclamation className="w-5 h-5" />} label="Verified Findings" value={stats.totalFindings || 0} hint={`${stats.totalCriticals || 0} critical · ${stats.totalExploitable || 0} exploitable`} color="red" />
+        <Stat icon={<HiOutlineClock className="w-5 h-5" />} label="Time Saved" value={fmtMinutes(stats.totalMinutesSaved)} hint={`Across ${stats.totalScans || 0} scan${stats.totalScans === 1 ? '' : 's'}`} color="emerald" />
+        <Stat icon={<HiOutlineGlobe className="w-5 h-5" />} label="Targets" value={targets.length} hint={isFree ? `${usedToday}/${dailyLimit} scans today` : 'Unlimited'} color="sky" />
+      </div>
+
+      {/* Streak strip */}
+      <StreakStrip stats={stats} />
+
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Targets to Hunt */}
+        <div className="lg:col-span-2 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base font-bold text-slate-200">Targets to Hunt</h2>
+            <Link to="/recon" className="text-xs font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1">
+              New scan <HiOutlineArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
+          <div className="glass-card divide-y divide-slate-800/50">
+            {loading ? (
+              <SkeletonRows />
+            ) : targets.length === 0 ? (
+              <div className="p-10 text-center">
+                <HiOutlineSearch className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+                <p className="text-sm font-semibold text-slate-300 mb-1">No targets yet</p>
+                <p className="text-xs text-slate-500 mb-5">Drop your first domain into the Recon Engine to get started.</p>
+                <Link to="/recon" className="btn-primary text-xs py-2.5 px-5 inline-flex">
+                  <HiOutlineLightningBolt className="w-4 h-4" />
+                  Run First Recon
+                </Link>
+              </div>
+            ) : (
+              targets.map((t) => (
+                <Link
+                  key={t.id}
+                  to="/recon"
+                  className="p-4 flex items-center justify-between hover:bg-brand-500/[0.04] transition-colors group"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[9px] uppercase tracking-widest font-bold text-slate-500">{t.type || 'recon'}</span>
+                      {(t.verifiedFindings || 0) > 0 && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded text-red-400 bg-red-500/10 border border-red-500/20">
+                          {t.verifiedFindings} VERIFIED
+                        </span>
+                      )}
+                      {(t.criticalFindings || 0) > 0 && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded text-red-400 bg-red-500/20 border border-red-500/40">
+                          {t.criticalFindings} CRITICAL
+                        </span>
+                      )}
+                    </div>
+                    <code className="text-[13px] font-mono font-semibold text-slate-100 truncate block">{t.target}</code>
+                    <p className="text-[11px] text-slate-500 mt-1">
+                      {t.summary?.subdomainCount || 0} subs · {t.summary?.endpointCount || 0} endpoints · {t.timeSaved?.minutesSaved || 0}m saved
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-3 ml-3">
+                    <span className={`text-xs font-bold ${(t.riskScore || 0) > 60 ? 'text-red-400' : (t.riskScore || 0) > 30 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                      {t.riskScore || 0}
+                    </span>
+                    <HiOutlineArrowRight className="w-4 h-4 text-slate-600 group-hover:text-brand-400 transition" />
+                  </div>
+                </Link>
+              ))
+            )}
+          </div>
+
+          {/* Recent Vulnerabilities */}
+          <h2 className="text-base font-bold text-slate-200 mt-6">Recent Vulnerabilities Found</h2>
+          <div className="glass-card divide-y divide-slate-800/50">
+            {loading ? (
+              <SkeletonRows count={2} />
+            ) : recentVulnScans.length === 0 ? (
+              <div className="p-8 text-center">
+                <p className="text-xs text-slate-500">No vulnerabilities surfaced yet — run a recon to find some.</p>
+              </div>
+            ) : (
+              recentVulnScans.map((s) => (
+                <div key={s.id} className="p-4 flex items-center justify-between">
+                  <div className="min-w-0">
+                    <code className="text-[13px] font-mono font-semibold text-slate-100 truncate block">{s.target}</code>
+                    <p className="text-[11px] text-slate-500 mt-1">
+                      {s.verifiedFindings || 0} verified · {s.exploitableFindings || 0} exploitable · {s.criticalFindings || 0} critical
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-bold px-2 py-1 rounded text-red-400 bg-red-500/10 border border-red-500/20">
+                    RISK {s.riskScore || 0}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
         </div>
-      )}
+
+        {/* Suggested Next Action + Upgrade */}
+        <div className="space-y-4">
+          <h2 className="text-base font-bold text-slate-200">Suggested Next Action</h2>
+          <div className="glass-card p-5 border-l-4 border-l-amber-500 bg-amber-500/[0.02]">
+            <div className="flex items-start gap-3 mb-3">
+              <HiOutlineFire className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="text-sm font-bold text-slate-100">{suggestion.title}</h3>
+                <p className="text-xs text-slate-400 leading-relaxed mt-1.5">{suggestion.body}</p>
+              </div>
+            </div>
+            <Link to={suggestion.cta.to} className="btn-primary w-full text-xs py-2.5 justify-center">
+              {suggestion.cta.label}
+            </Link>
+          </div>
+
+          {/* Leaderboard */}
+          <Leaderboard board={board} loading={loading} />
+
+          {isFree && (
+            <div className="glass-card p-5 relative overflow-hidden border-brand-500/20">
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-gradient-brand opacity-10 rounded-full blur-2xl pointer-events-none" />
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <HiOutlineLockClosed className="w-4 h-4 text-brand-400" />
+                  <span className="text-[10px] uppercase tracking-widest font-bold text-brand-400">Pro Plan</span>
+                </div>
+                <h3 className="font-bold text-slate-100 text-sm mb-2">Unlock the full hunter</h3>
+                <ul className="space-y-1.5 mb-4">
+                  {['Unlimited scans', 'Full subdomain + endpoint lists', 'AI exploit suggestions', 'PDF report exports'].map((f) => (
+                    <li key={f} className="text-[11px] text-slate-300 flex items-center gap-2">
+                      <span className="w-1 h-1 rounded-full bg-brand-400" /> {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/billing" className="btn-primary w-full text-xs py-2.5 justify-center shadow-glow">
+                  <HiOutlineLightningBolt className="w-3.5 h-3.5" />
+                  Upgrade — ₹499/mo
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-function StatsCard({ icon, label, value, color, loading }) {
-  const colors = {
-    brand: 'bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400',
-    sky: 'bg-sky-50 text-sky-600 dark:bg-sky-900/20 dark:text-sky-400',
-    indigo: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400',
-  };
-
+function StreakStrip({ stats }) {
+  const streak = stats.streak || 0;
+  const best = stats.bestStreak || 0;
+  const days = Array.from({ length: 7 }).map((_, i) => i < Math.min(streak, 7));
   return (
-    <div className="glass-card p-5">
+    <div className="glass-card p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div className="flex items-center gap-4">
-        <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${colors[color]}`}>
-          {icon}
+        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-glow-sm">
+          <HiOutlineFire className="w-5 h-5 text-white" />
         </div>
         <div>
-          {loading ? (
-            <div className="skeleton h-7 w-12 rounded mb-1" />
-          ) : (
-            <p className="text-2xl font-bold" style={{ color: 'var(--color-text)' }}>{value}</p>
-          )}
-          <p className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>{label}</p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black text-slate-100">{streak}</span>
+            <span className="text-xs font-semibold text-slate-400">day streak</span>
+          </div>
+          <p className="text-[11px] text-slate-500">
+            {streak === 0 ? 'Start hunting today to begin a streak' : streak >= best ? '🔥 Personal best — keep it alive' : `Best: ${best} days`}
+          </p>
         </div>
+      </div>
+      <div className="flex items-center gap-1.5">
+        {days.map((on, i) => (
+          <div
+            key={i}
+            className={`w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold transition ${
+              on ? 'bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-glow-sm' : 'bg-slate-800/40 text-slate-600 border border-slate-700/50'
+            }`}
+            title={on ? 'Active day' : 'Not yet'}
+          >
+            {on ? '✓' : i + 1}
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-function QuickTool({ to, icon, name, desc, gradient }) {
+function Leaderboard({ board, loading }) {
+  if (loading) return null;
+  if (!board?.length) return null;
   return (
-    <Link to={to} className="glass-card p-5 group hover:border-brand-500/20 transition-all duration-300">
-      <div className="flex items-center gap-4">
-        <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center text-white shadow-sm group-hover:shadow-glow-sm transition-shadow`}>
-          {icon}
+    <div className="glass-card p-5">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <HiOutlineTrendingUp className="w-4 h-4 text-emerald-400" />
+          <h3 className="text-sm font-bold text-slate-200">Top Hunters</h3>
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="text-[13px] font-bold mb-0.5 truncate" style={{ color: 'var(--color-text)' }}>{name}</h3>
-          <p className="text-[11px] truncate" style={{ color: 'var(--color-text-secondary)' }}>{desc}</p>
-        </div>
-        <HiOutlineArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-60 group-hover:translate-x-0.5 transition-all flex-shrink-0" style={{ color: 'var(--color-text-secondary)' }} />
+        <span className="text-[9px] uppercase tracking-widest font-bold text-slate-500">Global</span>
       </div>
-    </Link>
+      <ol className="space-y-2">
+        {board.slice(0, 7).map((u) => (
+          <li
+            key={u.uid}
+            className={`flex items-center gap-3 p-2 rounded-lg transition ${
+              u.isYou ? 'bg-brand-500/10 border border-brand-500/30' : 'hover:bg-slate-800/20'
+            }`}
+          >
+            <span
+              className={`w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-bold flex-shrink-0 ${
+                u.rank === 1 ? 'bg-amber-500/20 text-amber-400' :
+                u.rank === 2 ? 'bg-slate-400/20 text-slate-300' :
+                u.rank === 3 ? 'bg-orange-500/20 text-orange-400' :
+                'bg-slate-800/40 text-slate-500'
+              }`}
+            >
+              {u.rank}
+            </span>
+            <div className="flex-1 min-w-0">
+              <p className="text-[12px] font-semibold text-slate-200 truncate">
+                {u.displayName} {u.isYou && <span className="text-[9px] text-brand-400 font-bold">YOU</span>}
+              </p>
+              <p className="text-[10px] text-slate-500">{u.totalScans} scans · {u.totalVulns} vulns</p>
+            </div>
+            <span className="text-xs font-bold text-brand-400 flex-shrink-0">{u.hunterScore}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
+}
+
+function fmtMinutes(m) {
+  const n = Number(m) || 0;
+  if (n < 60) return `${n}m`;
+  const h = Math.floor(n / 60);
+  const rem = n % 60;
+  return rem ? `${h}h ${rem}m` : `${h}h`;
+}
+
+function Stat({ icon, label, value, hint, color }) {
+  const colorMap = {
+    brand: 'border-l-brand-500 text-brand-400',
+    sky: 'border-l-sky-500 text-sky-400',
+    red: 'border-l-red-500 text-red-400',
+    amber: 'border-l-amber-500 text-amber-400',
+    emerald: 'border-l-emerald-500 text-emerald-400',
+  };
+  return (
+    <div className={`glass-card p-5 border-l-4 ${colorMap[color]}`}>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[10px] uppercase tracking-widest font-bold text-slate-500">{label}</span>
+        <span className={colorMap[color].split(' ')[1]}>{icon}</span>
+      </div>
+      <h3 className="text-2xl font-black text-slate-100">{value}</h3>
+      <p className="text-[10px] text-slate-500 mt-1">{hint}</p>
+    </div>
+  );
+}
+
+function SkeletonRows({ count = 4 }) {
+  return Array.from({ length: count }).map((_, i) => (
+    <div key={i} className="p-4 animate-pulse">
+      <div className="h-3 w-1/3 bg-slate-800/40 rounded mb-2" />
+      <div className="h-2 w-1/2 bg-slate-800/30 rounded" />
+    </div>
+  ));
+}
+
+function hunterTier(score) {
+  if (!score) return 'Run a scan to start';
+  if (score >= 80) return 'Elite hunter';
+  if (score >= 50) return 'Active hunter';
+  if (score >= 20) return 'Warming up';
+  return 'Just getting started';
+}
+
+function computeNextAction(scans, isFree) {
+  if (!scans.length) {
+    return {
+      title: 'Run your first recon',
+      body: 'Drop in any domain. The engine will map subdomains, endpoints, tech, and vulns in 30 seconds.',
+      cta: { to: '/recon', label: 'Start Recon' },
+    };
+  }
+  const vulnerable = scans.find((s) => (s.verifiedFindings || 0) > 0);
+  if (vulnerable) {
+    return {
+      title: `Generate report for ${vulnerable.target}`,
+      body: `${vulnerable.verifiedFindings} verified findings with captured proof — ready to export as a bug-bounty report.`,
+      cta: { to: '/recon', label: 'Open Verified Findings' },
+    };
+  }
+  if (isFree) {
+    return {
+      title: 'Unlock the AI hunter',
+      body: 'Pro reveals the full attack surface plus an AI-generated exploit playbook for every scan.',
+      cta: { to: '/billing', label: 'Upgrade — ₹499/mo' },
+    };
+  }
+  return {
+    title: 'Pivot to a new target',
+    body: 'Your current targets look hardened. Time to hunt a fresh attack surface.',
+    cta: { to: '/recon', label: 'New Recon Scan' },
+  };
 }

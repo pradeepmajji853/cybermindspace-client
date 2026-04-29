@@ -105,7 +105,7 @@ export default function Register() {
               <div className="absolute -top-2.5 left-4 bg-brand-500 text-white text-[8px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Popular</div>
               <p className="text-[10px] font-bold text-brand-400 uppercase tracking-widest mb-1">Pro Plan</p>
               <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-2xl font-bold text-white">₹199</span>
+                <span className="text-2xl font-bold text-white">₹499</span>
                 <span className="text-[11px] text-slate-500">/mo</span>
               </div>
               <ul className="space-y-2.5">

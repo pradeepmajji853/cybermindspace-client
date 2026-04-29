@@ -22,6 +22,7 @@ import HttpBuilder from './pages/HttpBuilder';
 import RegexGenerator from './pages/RegexGenerator';
 import Traceroute from './pages/Traceroute';
 import EmailBreachChecker from './pages/EmailBreachChecker';
+import Recon from './pages/Recon';
 import { HiOutlineLockClosed, HiOutlineLightningBolt, HiOutlineArrowLeft } from 'react-icons/hi';
 
 const ADMIN_EMAILS = [
@@ -88,7 +89,7 @@ function PlanGate({ children, feature = 'this feature' }) {
           className="btn-primary w-full py-3.5 text-sm justify-center mb-3 shadow-glow"
         >
           <HiOutlineLightningBolt className="w-5 h-5" />
-          Upgrade to Pro — ₹199/mo
+          Upgrade to Pro — ₹499/mo
         </Link>
         <Link
           to="/dashboard"
@@ -129,6 +130,7 @@ function AppRoutes() {
               <Routes>
                 {/* Free access — all users */}
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/recon" element={<Recon />} />
                 <Route path="/tools" element={<ToolsHub />} />
                 <Route path="/learn" element={<Education />} />
                 <Route path="/history" element={<History />} />

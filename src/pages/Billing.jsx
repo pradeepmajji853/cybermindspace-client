@@ -27,25 +27,23 @@ const PLANS = [
   {
     id: 'pro',
     name: 'Pro',
-    price: '₹199',
+    price: '₹499',
     period: '/month',
-    tagline: 'Full power for serious researchers.',
+    tagline: 'Your bug bounty workflow in one place.',
     popular: true,
     features: [
-      { text: 'Unlimited scans', included: true },
-      { text: 'Full OSINT results', included: true },
-      { text: 'All 18 security tools unlocked', included: true },
-      { text: 'SQLi Payload Generator', included: true },
-      { text: 'JWT Decoder & Analyzer', included: true },
-      { text: 'HTTP Request Builder', included: true },
-      { text: 'Email Breach Checker', included: true },
-      { text: 'Traceroute Visualizer', included: true },
-      { text: 'Tech Stack Detector', included: true },
-      { text: 'Subdomain Takeover Checker', included: true },
-      { text: 'WHOIS Privacy Audit', included: true },
+      { text: 'Unified Recon Engine — full results', included: true },
+      { text: 'AI exploit suggestions per scan', included: true },
+      { text: 'Unlimited recon scans', included: true },
+      { text: 'Full subdomain + endpoint discovery', included: true },
+      { text: 'Subdomain takeover scanning', included: true },
+      { text: 'PDF report exports', included: true },
+      { text: 'All 18 advanced security tools', included: true },
+      { text: 'SQLi / JWT / HTTP / Regex / Traceroute', included: true },
+      { text: 'Email breach checker (full results)', included: true },
       { text: 'Pro Academy (18 expert guides)', included: true },
-      { text: 'Unlimited PDF report exports', included: true },
-      { text: 'Priority processing', included: true },
+      { text: 'Hunter Score + streaks', included: true },
+      { text: 'Priority processing & cache', included: true },
     ],
   },
 ];
@@ -115,10 +113,10 @@ export default function Billing() {
           <HiOutlineLightningBolt className="w-3 h-3" /> Simple Pricing
         </div>
         <h1 className="text-3xl md:text-4xl font-bold tracking-tight" style={{ color: 'var(--color-text)' }}>
-          Free to Start, <span className="text-gradient">Pro to Master</span>
+          Stop Guessing. <span className="text-gradient">Start Exploiting.</span>
         </h1>
         <p className="max-w-lg mx-auto text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-          Start with free tools. Upgrade to Pro for unlimited access to all 18 security tools, academy content, and report exports.
+          Free to scout. Upgrade to Pro for the full Recon Engine, AI exploit playbooks, and unlimited PDF reports.
         </p>
       </div>
 

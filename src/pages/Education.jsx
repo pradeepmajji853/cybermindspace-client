@@ -122,7 +122,7 @@ function AcademyShowcase() {
             </div>
             <Link to="/billing" className="btn-primary py-3 px-8 text-sm shadow-glow inline-flex items-center gap-2">
               <HiOutlineLightningBolt className="w-4 h-4" />
-              Upgrade to Pro — ₹199/mo
+              Upgrade to Pro — ₹499/mo
             </Link>
           </div>
         </div>
@@ -137,7 +137,7 @@ function AcademyShowcase() {
           <HiOutlineLightningBolt className="w-5 h-5" />
           Get Pro Access
         </Link>
-        <p className="text-[10px] opacity-30">₹199/month • Cancel anytime • Instant access</p>
+        <p className="text-[10px] opacity-30">₹499/month • Cancel anytime • Instant access</p>
       </div>
 
       {/* Keyframe for staggered entrance */}

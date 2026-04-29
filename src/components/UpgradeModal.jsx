@@ -90,7 +90,7 @@ export default function UpgradeModal({ show, onClose, trigger }) {
 
           <div className="text-left glass-card p-5 mb-6">
             <div className="flex items-baseline gap-1 mb-4">
-              <span className="text-3xl font-bold" style={{ color: 'var(--color-text)' }}>₹199</span>
+              <span className="text-3xl font-bold" style={{ color: 'var(--color-text)' }}>₹499</span>
               <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>/month</span>
             </div>
             <ul className="space-y-2.5">
@@ -113,7 +113,7 @@ export default function UpgradeModal({ show, onClose, trigger }) {
             ) : (
               <>
                 <HiOutlineLightningBolt className="w-5 h-5" />
-                Upgrade to Pro — ₹199/mo
+                Upgrade to Pro — ₹499/mo
               </>
             )}
           </button>

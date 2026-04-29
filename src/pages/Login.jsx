@@ -95,7 +95,7 @@ export default function Login() {
             <span className="w-1 h-1 rounded-full bg-slate-700" />
             <span><strong className="text-white font-semibold">Free</strong> Tier Available</span>
             <span className="w-1 h-1 rounded-full bg-slate-700" />
-            <span><strong className="text-white font-semibold">₹199</strong>/mo Pro</span>
+            <span><strong className="text-white font-semibold">₹499</strong>/mo Pro</span>
           </div>
         </div>
       </div>

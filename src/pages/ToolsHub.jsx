@@ -254,14 +254,38 @@ export default function ToolsHub() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-fade-in">
+      {/* Recon Engine promo — push the workflow first */}
+      <Link
+        to="/recon"
+        className="glass-card p-6 flex items-center justify-between gap-6 border-l-4 border-l-brand-500 hover:shadow-glow transition-all group relative overflow-hidden"
+      >
+        <div className="absolute -top-10 -right-10 w-48 h-48 bg-gradient-brand opacity-10 rounded-full blur-3xl pointer-events-none" />
+        <div className="flex items-center gap-4 relative">
+          <div className="w-12 h-12 rounded-xl bg-gradient-brand flex items-center justify-center shadow-glow-sm flex-shrink-0">
+            <HiOutlineLightningBolt className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-gradient-brand text-white tracking-widest uppercase">New</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-brand-400">Recommended Workflow</span>
+            </div>
+            <h2 className="text-base md:text-lg font-bold text-slate-100">Use the Unified Recon Engine</h2>
+            <p className="text-xs text-slate-400 mt-1 max-w-xl">
+              One target → subdomains, endpoints, tech, vulns, takeover signals & AI exploit playbook in 30 seconds. The tools below are for follow-up deep dives.
+            </p>
+          </div>
+        </div>
+        <HiOutlineArrowRight className="w-5 h-5 text-brand-400 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+      </Link>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
-            CyberMindSpace <span className="text-gradient">Toolkit</span>
+            Advanced <span className="text-gradient">Tools</span>
           </h1>
           <p className="text-sm opacity-60" style={{ color: 'var(--color-text)' }}>
-            The complete security arsenal for bug hunters and researchers.
+            Specialised utilities for when the Recon Engine surfaces something worth pivoting on.
           </p>
         </div>
         
