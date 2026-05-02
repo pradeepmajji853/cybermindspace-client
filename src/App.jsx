@@ -23,6 +23,8 @@ import RegexGenerator from './pages/RegexGenerator';
 import Traceroute from './pages/Traceroute';
 import EmailBreachChecker from './pages/EmailBreachChecker';
 import Recon from './pages/Recon';
+import ResearchSentinel from './pages/ResearchSentinel';
+
 import { HiOutlineLockClosed, HiOutlineLightningBolt, HiOutlineArrowLeft } from 'react-icons/hi';
 
 const ADMIN_EMAILS = [
@@ -150,6 +152,8 @@ function AppRoutes() {
                 <Route path="/tools/regex" element={<PlanGate feature="Regex Generator"><RegexGenerator /></PlanGate>} />
                 <Route path="/tools/email-breach" element={<PlanGate feature="Email Breach Checker"><EmailBreachChecker /></PlanGate>} />
                 <Route path="/tools/traceroute" element={<PlanGate feature="Traceroute Visualizer"><Traceroute /></PlanGate>} />
+                <Route path="/tools/research-sentinel" element={<PlanGate feature="Sentinel Research Engine"><ResearchSentinel /></PlanGate>} />
+
 
                 <Route path="*" element={<Navigate to="/dashboard" />} />
               </Routes>

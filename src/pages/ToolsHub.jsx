@@ -203,7 +203,16 @@ const TOOLS = [
     badge: 'Pro',
     tier: 'pro',
   },
-
+  {
+    id: 'research-sentinel',
+    category: 'intelligence',
+    name: 'Sentinel Research Engine',
+    description: 'PhD-level recon with favicon hashing, ASN mapping, and correlation research.',
+    icon: <HiOutlineSparkles className="w-6 h-6" />,
+    path: '/tools/research-sentinel',
+    badge: 'Elite',
+    tier: 'elite',
+  },
 ];
 
 function ToolCard({ tool }) {
@@ -269,9 +278,9 @@ export default function ToolsHub() {
               <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-gradient-brand text-white tracking-widest uppercase">New</span>
               <span className="text-[9px] font-bold uppercase tracking-widest text-brand-400">Recommended Workflow</span>
             </div>
-            <h2 className="text-base md:text-lg font-bold text-slate-100">Use the Unified Recon Engine</h2>
+            <h2 className="text-base md:text-lg font-bold text-slate-100">Find real vulnerabilities. Generate reports instantly.</h2>
             <p className="text-xs text-slate-400 mt-1 max-w-xl">
-              One target → subdomains, endpoints, tech, vulns, takeover signals & AI exploit playbook in 30 seconds. The tools below are for follow-up deep dives.
+              One target → subdomains, endpoints, tech, takeover signals & Verified Findings in 30 seconds.
             </p>
           </div>
         </div>

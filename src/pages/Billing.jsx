@@ -32,8 +32,8 @@ const PLANS = [
     tagline: 'Your bug bounty workflow in one place.',
     popular: true,
     features: [
-      { text: 'Unified Recon Engine — full results', included: true },
-      { text: 'AI exploit suggestions per scan', included: true },
+      { text: 'Recon → Report Engine — full results', included: true },
+      { text: 'Verified Findings with captured proof', included: true },
       { text: 'Unlimited recon scans', included: true },
       { text: 'Full subdomain + endpoint discovery', included: true },
       { text: 'Subdomain takeover scanning', included: true },
@@ -116,7 +116,7 @@ export default function Billing() {
           Stop Guessing. <span className="text-gradient">Start Exploiting.</span>
         </h1>
         <p className="max-w-lg mx-auto text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-          Free to scout. Upgrade to Pro for the full Recon Engine, AI exploit playbooks, and unlimited PDF reports.
+          Free to scout. Upgrade to Pro for the full Recon → Report Engine, Verified Findings, and unlimited PDF reports.
         </p>
       </div>
 

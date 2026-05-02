@@ -95,13 +95,18 @@ export default function History() {
               </thead>
               <tbody className="divide-y" style={{ borderColor: 'var(--color-border)' }}>
                 {history.map(item => (
-                  <tr key={item.id} className="hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors">
-                    <td className="px-5 py-3">
-                      <span className="text-sm font-mono font-medium" style={{ color: 'var(--color-text)' }}>
-                        {item.query}
-                      </span>
+                  <tr key={item.id} className="hover:bg-slate-800/30 transition-colors">
+                    <td className="px-5 py-4">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-mono font-bold text-slate-100">
+                          {item.query}
+                        </span>
+                        <span className="text-[10px] text-slate-500 uppercase tracking-widest mt-0.5">
+                          {item.source === 'recon' ? 'Recon Engine' : 'OSINT Search'}
+                        </span>
+                      </div>
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="px-5 py-4">
                       <span className={`badge ${
                         item.inputType === 'email' ? 'badge-blue' :
                         item.inputType === 'ip' ? 'badge-purple' :
@@ -110,25 +115,24 @@ export default function History() {
                         {item.inputType}
                       </span>
                     </td>
-                    <td className="px-5 py-3">
-                      <span className={`text-xs font-mono font-semibold ${getRiskClass(item.riskScore)}`}>
-                        {item.riskScore !== undefined ? item.riskScore : '—'}
+                    <td className="px-5 py-4">
+                      <span className={`text-xs font-mono font-black ${getRiskClass(item.riskScore)}`}>
+                        {item.riskScore !== undefined ? `${item.riskScore}%` : '—'}
                       </span>
                     </td>
-                    <td className="px-5 py-3">
-                      <span className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                    <td className="px-5 py-4">
+                      <span className="text-xs text-slate-500">
                         {new Date(item.createdAt).toLocaleDateString('en-IN', {
-                          day: '2-digit', month: 'short', year: 'numeric',
-                          hour: '2-digit', minute: '2-digit'
+                          day: '2-digit', month: 'short', year: 'numeric'
                         })}
                       </span>
                     </td>
-                    <td className="px-5 py-3 text-right">
+                    <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Link
-                          to={`/tools/osint`}
-                          className="btn-ghost text-xs py-1 px-2"
-                          title="View"
+                          to={item.source === 'recon' ? `/recon?target=${item.query}` : `/tools/osint`}
+                          className="p-2 rounded-lg bg-brand-500/10 text-brand-400 hover:bg-brand-500/20 transition-all"
+                          title="View Intelligence"
                         >
                           <HiOutlineExternalLink className="w-4 h-4" />
                         </Link>
